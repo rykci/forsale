@@ -10,9 +10,14 @@ const PickCard = ({ G, ctx, playerID, events }, card) => {
   G.players[playerID].cards.splice(index, 1)
 
   if (!G.selling.includes(0)) {
+    let sortedPlayers = sortPlayersByHouse(G.selling)
+    console.log(sortedPlayers)
+
     for (let i = 0; i < ctx.numPlayers; i++) {
-      console.log(G.selling)
-      // let lowestCard = Math.min(G.selling.map((price) => Number(price)))
+      console.log(G.prices[i])
+
+      G.players[sortedPlayers[i]].coins += G.prices[i]
+
       // let playerIndex = G.selling.indexOf(lowestCard)
       // console.log('player', playerIndex, 'sold', lowestCard)
       // console.log(G.players[playerIndex])
@@ -22,6 +27,17 @@ const PickCard = ({ G, ctx, playerID, events }, card) => {
 
     events.endPhase()
   }
+}
+
+function sortPlayersByHouse(toSort) {
+  // Create an array of pairs, where the first element is the value and the second element is the original index
+  const indexedArray = toSort.map((val, index) => [val, index])
+
+  // Sort the array of pairs by the values, in descending order
+  indexedArray.sort((a, b) => b[0] - a[0])
+
+  // Extract the original indices from the sorted array of pairs and return as an array
+  return indexedArray.map((pair) => pair[1])
 }
 
 const Bid = ({ G, playerID }, amount) => {
@@ -50,11 +66,6 @@ const Pass = ({ G, playerID, events, ctx }) => {
   G.players[playerID].cards.push(pickup)
 
   console.log(`PLAYER ${playerID} PICKS UP ${pickup}`)
-  let s = 'AUCTION: [ '
-  for (let i = 0; i < G.auction.length; i++) {
-    s += G.auction[i] + ', '
-  }
-  console.log(s + ']')
 
   if (G.auction.length == 1) {
     for (let i = 0; i < ctx.numPlayers; i++) {
@@ -97,6 +108,8 @@ export const ForSale = {
     }
 
     return {
+      // deck: [1, 2, 3, 4],
+      // priceDeck: [1, 2, 3, 4],
       deck,
       priceDeck,
       players,
@@ -126,7 +139,6 @@ export const ForSale = {
     buying: {
       onBegin: ({ G, ctx }) => {
         G.auction = G.deck.splice(0, ctx.numPlayers).sort((a, b) => b - a)
-        console.log('AUCTION:', G.auction)
         for (let i = 0; i < ctx.numPlayers; i++) {
           G.players[i].bid = 0
           G.players[i].hasPassed = false
@@ -155,7 +167,6 @@ export const ForSale = {
         maxMoves: 1,
         activePlayers: { all: 'playCard' },
       },
-
       next: 'selling',
     },
   },
@@ -166,7 +177,8 @@ export const ForSale = {
       for (let i = 0; i < ctx.numPlayers; i++) {
         coinsArr[i] = G.players[i].coins
       }
-      return { winner: coinsArr.findIndex(Math.max(coinsArr)) }
+      let mostCoins = Math.max(...coinsArr)
+      return { winner: coinsArr.indexOf(mostCoins) }
     }
   },
 }
