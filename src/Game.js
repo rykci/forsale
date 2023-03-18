@@ -1,4 +1,4 @@
-import { INVALID_MOVE, TurnOrder } from 'boardgame.io/core'
+import { INVALID_MOVE, TurnOrder } from 'boardgame.io/dist/cjs/core.js'
 
 const PickCard = ({ G, ctx, playerID, events }, card) => {
   const index = G.players[playerID].cards.indexOf(card)
