@@ -1,8 +1,11 @@
 import { Client } from 'boardgame.io/react'
+import { LobbyClient } from 'boardgame.io/client'
 import { ForSale } from './Game'
 import { Board } from './Board'
 import { SocketIO } from 'boardgame.io/multiplayer'
 import Landing from './components/Landing'
+
+const lobbyClient = new LobbyClient({ server: 'http://localhost:8000' })
 
 const ForSaleClient = Client({
   game: ForSale,
@@ -12,8 +15,8 @@ const ForSaleClient = Client({
 
 const App = () => {
   return (
-    <div>
-      <Landing />
+    <div className="flex flex-col justify-center align-middle w-screen h-screen bg-[url('/for-sale-bg.jpeg')] bg-cover">
+      <Landing lobbyClient={lobbyClient} />
       {/*<ForSaleClient numPlayers='4' />*/}
     </div>
   )

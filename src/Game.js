@@ -80,6 +80,7 @@ const Pass = ({ G, playerID, events, ctx }) => {
 }
 
 export const ForSale = {
+  name: 'for-sale',
   minPlayers: 3,
   maxPlayers: 6,
   setup: ({ random, ctx }) => {
