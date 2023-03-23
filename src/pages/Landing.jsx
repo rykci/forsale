@@ -29,6 +29,11 @@ function Landing({
   }, [])
 
   const createMatch = async () => {
+    if (!name) {
+      alert('Please enter a name')
+      return
+    }
+
     // if game id exists i.e landing page from room, use existing game id
     // else create a new match ID
     try {
@@ -56,13 +61,13 @@ function Landing({
 
   return (
     <div className="flex flex-col justify-center align-middle w-screen h-screen bg-[url('/for-sale-bg.jpeg')] bg-cover">
-      <div className="flex flex-col justify-center align-middle border-2 w-1/2 self-center p-8 gap-4 rounded-lg bg-slate-200/50">
-        <h1 className="">For Sale</h1>
+      <div className="flex flex-col justify-center align-middle w-4/5 lg:w-1/3 self-center p-8 gap-4 rounded-lg bg-slate-200/50">
         <input
+          className="p-2 rounded-md w-5/6 self-center text-center"
           placeholder="Enter your name"
           onChange={(e) => setName(e.target.value)}
         />
-        <div>
+        <div className="flex flex-row gap-8 justify-center">
           <button onClick={() => createMatch()}>
             {roomID ? 'Join Room' : 'Create Room'}
           </button>
