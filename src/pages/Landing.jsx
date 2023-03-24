@@ -19,18 +19,34 @@ function Landing({
     }
   }, [gameID])
 
-  useEffect(() => {
-    const fetchMatches = async () => {
-      const { matches } = await lobbyClient.listMatches('for-sale')
-      console.log(matches)
-    }
-
-    fetchMatches()
-  }, [])
-
-  const createMatch = async () => {
+  // check if the name is valid
+  const isNameValid = async () => {
+    // check if name is empty
     if (!name) {
       alert('Please enter a name')
+      return false
+    }
+
+    // if the user is joining a game (ie not the only one in the room)
+    // then we need to check if the name is taken
+    if (gameID) {
+      let match = await lobbyClient.getMatch('for-sale', gameID)
+      let takenNames = match.players.map((player) => player.name)
+      if (takenNames.includes(name)) {
+        alert(name + ' is already taken')
+        setName('')
+        return false
+      }
+    }
+
+    return true
+  }
+
+  const joinMatch = async (e) => {
+    e.preventDefault()
+    let validName = await isNameValid()
+
+    if (!validName) {
       return
     }
 
@@ -60,15 +76,19 @@ function Landing({
   }
 
   return (
-    <div className="flex flex-col justify-center align-middle w-screen h-screen bg-[url('/for-sale-bg.jpeg')] bg-cover">
-      <div className="flex flex-col justify-center align-middle w-4/5 lg:w-1/3 self-center p-8 gap-4 rounded-lg bg-slate-200/50">
+    <div className="flex flex-col justify-center align-middle w-screen h-screen bg-[url('/for-sale-bg.jpeg')]  bg-cover bg-no-repeat">
+      <form
+        onSubmit={(e) => joinMatch(e)}
+        className="flex flex-col justify-center align-middle w-4/5 lg:w-1/3 self-center p-8 gap-4 rounded-lg bg-white"
+      >
         <input
-          className="p-2 rounded-md w-5/6 self-center text-center"
+          className="p-2 rounded-md w-5/6 self-center text-center border"
           placeholder="Enter your name"
           onChange={(e) => setName(e.target.value)}
+          value={name}
         />
         <div className="flex flex-row gap-8 justify-center">
-          <button onClick={() => createMatch()}>
+          <button onClick={(e) => joinMatch(e)} className="">
             {roomID ? 'Join Room' : 'Create Room'}
           </button>
           {roomID ? (
@@ -87,7 +107,7 @@ function Landing({
             </select>
           )}
         </div>
-      </div>
+      </form>
     </div>
   )
 }
