@@ -6,6 +6,7 @@
 - [x] room page
 - [ ] remove outline on hover for disabled start button
 - [ ] BUG: Users in Lobby do not update
+- [ ] add leave room button
 - [ ] room page copy to clipboard function
 - [ ] room page loading styling
 - [ ] play the game
