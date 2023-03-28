@@ -1,18 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { Client, Lobby } from 'boardgame.io/react'
 import { LobbyClient } from 'boardgame.io/client'
-import { ForSale } from './Game'
-import { Board } from './Board'
-import { SocketIO } from 'boardgame.io/multiplayer'
 import Landing from './pages/Landing'
 import { useState } from 'react'
 import Room from './pages/Room'
-
-const ForSaleClient = Client({
-  game: ForSale,
-  board: Board,
-  multiplayer: SocketIO({ server: 'localhost:8000' }),
-})
 
 const lobbyClient = new LobbyClient({ server: 'http://localhost:8000' })
 

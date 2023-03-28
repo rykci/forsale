@@ -92,7 +92,15 @@ function Landing({
             {roomID ? 'Join Room' : 'Create Room'}
           </button>
           {roomID ? (
-            <></>
+            <button
+              onClick={(e) => {
+                setGameID(null)
+                navigate('/')
+              }}
+              className=""
+            >
+              Home
+            </button>
           ) : (
             <select
               className="p-3 rounded-lg"
