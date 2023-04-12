@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Card from './components/Card'
 
 export function Board(props) {
-  const { ctx, G, moves, matchData } = props
+  const { ctx, G, moves, matchData, playerID } = props
 
   const [bid, setBid] = useState(0)
 
@@ -10,20 +10,26 @@ export function Board(props) {
     setBid(G.players[G.highestBidder].bid + 1)
   }, [G.highestBidder])
 
+  const pickCard = (card) => {
+    if (G.selling[playerID] == 0) {
+      moves.PickCard(card)
+    }
+  }
+
   return (
     <div className="flex flex-col h-screen w-screen bg-amber-50 justify-between ">
       <div className="flex justify-between p-8">
-        <div className="log pl-2">
+        {/* <div className="log pl-2">
           {matchData.map((player) =>
             player.isConnected ? (
-              <div></div>
+              <></>
             ) : (
               <div className="p-2 text-black">
                 {player.name} has left the game...
               </div>
             ),
           )}
-        </div>
+        </div> */}
         <div className="flex justify-evenly flex-1 gap-x-8">
           {Object.values(G.players).map((player, pid) => (
             <div
@@ -34,24 +40,34 @@ export function Board(props) {
             >
               <div className="font-semibold text-xl">{matchData[pid].name}</div>
               <div>Coins: {player.coins}</div>
-              <div>{player.hasPassed ? 'Passed' : 'Bid: ' + player.bid}</div>
+              <div>
+                {ctx.phase == 'selling'
+                  ? ''
+                  : player.hasPassed
+                  ? 'Passed'
+                  : 'Bid: ' + player.bid}
+              </div>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="flex flex-col justify-center items-center gap-y-8">
-        <h2 className="text-4xl font-semibold">
-          {props.playerID == ctx.currentPlayer
-            ? 'Your Turn...'
-            : `${matchData[ctx.currentPlayer].name}'s Turn...`}
-        </h2>
-        <div className="rounded-xl p-10 flex gap-4  bg-[url('/wood.jpeg')] bg-cover bg-no-repeat shadow-2xl justify-center">
-          {props.G.auction.map((n) => (
-            <Card className="" key={n} value={n} />
-          ))}
+      <div className="flex flex-col justify-center items-center gap-y-8 border-2 md:flex-row md:justify-evenly">
+        <div>
+          <h2 className="text-4xl font-semibold text-center">
+            {ctx.phase == 'selling'
+              ? 'Pick one of your cards...'
+              : props.playerID == ctx.currentPlayer
+              ? 'Your Turn...'
+              : `${matchData[ctx.currentPlayer].name}'s Turn...`}
+          </h2>
+          <div className="rounded-xl p-10 flex gap-4  bg-[url('/wood.jpeg')] bg-cover bg-no-repeat shadow-2xl justify-center">
+            {ctx.phase == 'selling'
+              ? G.prices.map((n) => <Card color="green" key={n} value={n} />)
+              : G.auction.map((n) => <Card className="" key={n} value={n} />)}
+          </div>
         </div>
-        {props.playerID == ctx.currentPlayer ? (
+        {playerID == ctx.currentPlayer && ctx.phase == 'buying' ? (
           <div className="flex flex-row gap-4 p-4 border-2 border-red-200">
             <div className="flex flex-col gap-2">
               <button
@@ -72,7 +88,7 @@ export function Board(props) {
                 <button
                   className="enabled:active:translate-y-1 disabled:bg-white/30 disabled:text-gray-500"
                   onClick={() => setBid(bid + 1)}
-                  disabled={bid >= G.players[props.playerID].coins}
+                  disabled={bid >= G.players[playerID].coins}
                 >
                   {'>'}
                 </button>
@@ -87,6 +103,8 @@ export function Board(props) {
               </button>
             </div>
           </div>
+        ) : ctx.phase == 'selling' && G.selling[playerID] > 0 ? (
+          <Card value={G.selling[playerID]} />
         ) : (
           <></>
         )}
@@ -95,8 +113,10 @@ export function Board(props) {
       <div className="p-8 flex flex-col gap-2">
         <div className="text-3xl font-semibold">Your Cards:</div>
         <div className="flex gap-x-2">
-          {G.players[props.playerID].cards.map((card) => (
-            <Card className="" key={card} value={card} />
+          {G.players[playerID].cards.map((card) => (
+            <div onClick={() => pickCard(card)}>
+              <Card className="" key={card} value={card} />
+            </div>
           ))}
         </div>
       </div>

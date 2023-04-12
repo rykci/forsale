@@ -8,8 +8,15 @@
 - [x] BUG: Users in Lobby do not update
 - [ ] add error: room not found
 - [x] leave room button should call leave match api
-- [ ] room page copy to clipboard function
+- [x] room page copy to clipboard function
 - [ ] room page loading styling
 - [ ] play the game
+  - [ ] end game screen
 - [ ] UX: hover "Copied!" button text
 - [ ] Design card bg and board bg
+- [ ] Hover Pick Card
+- [ ] Show players waiting to pick
+- [ ] maybe show blank cards when players pick (UI/UX)
+- [ ] Add delay to "reveal" each player's card
+  - [ ] suggestion: after each player PickCard(), send to ready/confirm/next stage
+  - [ ] all players need to send Confirm() before continuing the game
