@@ -14,7 +14,7 @@
   - [x] end game screen
 - [ ] UX: hover "Copied!" button text
 - [ ] Design card bg and board bg
-- [ ] Hover Pick Card
+- [x] Hover Pick Card
 - [x] Show players waiting to pick
 - [x] maybe show blank cards when players pick (UI/UX)
 - [x] Add delay to "reveal" each player's card

@@ -17,7 +17,7 @@ const PickCard = ({ G, ctx, playerID, events }, card) => {
     for (let i = 0; i < ctx.numPlayers; i++) {
       console.log(G.prices[i])
 
-      G.players[sortedPlayers[i]].coins += G.prices[i]
+      G.players[i].coins += G.prices[sortedPlayers[i]]
     }
 
     events.endPhase()
@@ -123,7 +123,9 @@ export const ForSale = {
       priceDeck,
       players,
       highestBidder: random.Die(ctx.numPlayers) - 1,
-      prices: [null],
+      prices: Array(ctx.numPlayers).fill(0),
+      sortedSelling: Array(ctx.numPlayers).fill(0),
+      ready: Array(ctx.numPlayers).fill(false),
     }
   },
 

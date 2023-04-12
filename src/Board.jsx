@@ -7,9 +7,13 @@ export function Board(props) {
   const { ctx, G, moves, matchData, playerID } = props
 
   const [bid, setBid] = useState(0)
+  const [hoverCard, setHoverCard] = useState(false)
 
   useEffect(() => {
     setBid(1)
+    if (ctx.phase == 'selling' && G.selling[playerID] == 0) {
+      setHoverCard(true)
+    }
   }, [ctx.phase])
 
   useEffect(() => {
@@ -18,13 +22,14 @@ export function Board(props) {
 
   const pickCard = (card) => {
     if (G.selling[playerID] == 0) {
+      setHoverCard(false)
       moves.PickCard(card)
     }
   }
 
   if (ctx.gameover) {
     return (
-      <div className="flex flex-col h-screen w-screen bg-amber-50 justify-center align-middle gap-y-8 ">
+      <div className="flex flex-col min-h-screen w-screen bg-amber-50 justify-center align-middle gap-y-8 ">
         <div className="rounded-xl p-10 flex gap-8  bg-[url('/wood.jpeg')] bg-cover bg-no-repeat shadow-2xl self-center flex-col  ">
           {Object.values(G.players).map((player, pid) => (
             <div key={pid} className="text-white flex align-middle gap-x-10">
@@ -67,9 +72,8 @@ export function Board(props) {
         </div> */}
         <div className="flex justify-evenly flex-1 gap-x-8">
           {Object.values(G.players).map((player, pid) => (
-            <div className="w-1/6 flex flex-col gap-y-2">
+            <div className="w-1/6 flex flex-col gap-y-2" key={pid}>
               <div
-                key={pid}
                 className={`p-4 rounded-xl bg-[url('/wood.jpeg')] bg-cover bg-no-repeat shadow-2xl text-white flex justify-between`}
               >
                 <div>
@@ -85,47 +89,44 @@ export function Board(props) {
                       : 'Bid: ' + player.bid}
                   </div>
                 </div>
-                {ctx.phase == 'readyUp' || G.players[pid].hasPassed ? (
-                  <div>
-                    {G.deck.length > 0 ||
+                {ctx.phase == 'buying' && G.players[pid].hasPassed ? (
+                  <Card
+                    size="small"
+                    value={
+                      G.players[pid].cards[G.players[pid].cards.length - 1]
+                    }
+                  />
+                ) : ctx.phase == 'selling' ? (
+                  G.selling[pid] == 0 ? (
+                    <Card size="small" color="blank" />
+                  ) : pid == playerID ? (
+                    <Card size="small" value={G.selling[pid]} />
+                  ) : (
+                    <Card size="small" value="?" />
+                  )
+                ) : ctx.phase == 'readyUp' &&
+                  (G.deck.length > 0 ||
                     G.auction.length > 0 ||
-                    G.priceDeck.length >= 28 ? (
-                      <Card
-                        size="small"
-                        value={
-                          G.players[pid].cards[G.players[pid].cards.length - 1]
-                        }
-                      />
-                    ) : (
-                      <></>
-                    )}
-
-                    <div className="">{G.ready[pid] ? 'Ready' : ''}</div>
+                    G.priceDeck.length >= 28) ? (
+                  <Card
+                    size="small"
+                    value={
+                      G.players[pid].cards[G.players[pid].cards.length - 1]
+                    }
+                  />
+                ) : ctx.phase == 'readyUp' ? (
+                  <div className="flex gap-1">
+                    <Card size="small" value={G.selling[pid]} />
+                    <Card
+                      size="small"
+                      color="green"
+                      value={G.prices[G.sortedSelling[pid]]}
+                    />
                   </div>
                 ) : (
                   <></>
                 )}
               </div>
-              {ctx.phase == 'selling' ? (
-                <div className="flex justify-evenly">
-                  {G.selling[pid] == 0 ? (
-                    <Card color="blank" />
-                  ) : pid == playerID ? (
-                    <Card value={G.selling[pid]} />
-                  ) : (
-                    <Card />
-                  )}
-                </div>
-              ) : ctx.phase == 'readyUp' &&
-                G.sortedSelling &&
-                !G.sortedSelling.every((value) => value == 0) ? (
-                <div className="flex justify-evenly">
-                  <Card value={G.selling[pid]} />
-                  <Card color="green" value={G.prices[G.sortedSelling[pid]]} />
-                </div> // show selling and prices // dont need sold?
-              ) : (
-                <></>
-              )}
             </div>
           ))}
         </div>
@@ -202,8 +203,12 @@ export function Board(props) {
         <div className="text-3xl font-semibold">Your Cards:</div>
         <div className="flex gap-x-2">
           {G.players[playerID].cards.map((card) => (
-            <div onClick={() => pickCard(card)}>
-              <Card className="" key={card} value={card} />
+            <div
+              key={card}
+              onClick={() => pickCard(card)}
+              className={`${hoverCard ? 'hover:-translate-y-4' : ''}`}
+            >
+              <Card className="" value={card} />
             </div>
           ))}
         </div>
