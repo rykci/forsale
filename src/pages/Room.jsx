@@ -83,6 +83,7 @@ function Room({ lobbyClient, playerToken, setPlayerToken, name, setName }) {
       board: Board,
       multiplayer: SocketIO({ server: 'localhost:8000' }),
       numPlayers: matchData.players.length,
+      //debug: false,
     })
     return (
       <ForSaleClient

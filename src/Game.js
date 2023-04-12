@@ -12,17 +12,12 @@ const PickCard = ({ G, ctx, playerID, events }, card) => {
   if (!G.selling.includes(0)) {
     let sortedPlayers = sortPlayersByHouse(G.selling)
     console.log(sortedPlayers)
+    G.sortedSelling = sortedPlayers
 
     for (let i = 0; i < ctx.numPlayers; i++) {
       console.log(G.prices[i])
 
       G.players[sortedPlayers[i]].coins += G.prices[i]
-
-      // let playerIndex = G.selling.indexOf(lowestCard)
-      // console.log('player', playerIndex, 'sold', lowestCard)
-      // console.log(G.players[playerIndex])
-      // G.players[playerIndex].coins += G.prices.pop()
-      // G.selling[playerIndex] = 31
     }
 
     events.endPhase()
@@ -79,6 +74,13 @@ const Pass = ({ G, playerID, events, ctx }) => {
   }
 }
 
+const Ready = ({ G, playerID, events }) => {
+  G.ready[playerID] = true
+  if (G.ready.every((value) => value === true)) {
+    events.endPhase()
+  }
+}
+
 export const ForSale = {
   name: 'for-sale',
   minPlayers: 3,
@@ -107,6 +109,12 @@ export const ForSale = {
     for (let i = 0; i < ctx.numPlayers; i++) {
       players[i] = { coins: initialAmount, cards: [] }
     }
+
+    // FOR TESTING (FAST FORWARD BUYING)
+    // let len = deck.length
+    // for (let i = 0; i < ctx.numPlayers; i++) {
+    //   players[i].cards = deck.splice(0, len / ctx.numPlayers - 2)
+    // }
 
     return {
       // deck: [1, 2, 3, 4],
@@ -143,19 +151,20 @@ export const ForSale = {
         for (let i = 0; i < ctx.numPlayers; i++) {
           G.players[i].bid = 0
           G.players[i].hasPassed = false
+          G.ready = Array(ctx.numPlayers).fill(false)
         }
       },
       start: true,
       moves: { Bid, Pass },
-      next: ({ G }) => {
-        return G.deck.length == 0 ? 'selling' : 'buying'
-      },
+      next: 'readyUp',
     },
 
     selling: {
       onBegin: ({ G, ctx }) => {
         G.prices = G.priceDeck.splice(0, ctx.numPlayers).sort((a, b) => b - a)
+        G.sortedSelling = Array(ctx.numPlayers).fill(0)
         G.selling = Array(ctx.numPlayers).fill(0)
+        G.ready = Array(ctx.numPlayers).fill(false)
       },
 
       turn: {
@@ -168,7 +177,26 @@ export const ForSale = {
         maxMoves: 1,
         activePlayers: { all: 'playCard' },
       },
-      next: 'selling',
+      next: 'readyUp',
+    },
+
+    readyUp: {
+      onBegin: ({ G, ctx }) => {
+        G.ready = Array(ctx.numPlayers).fill(false)
+      },
+      turn: {
+        stages: {
+          ready: {
+            moves: { Ready },
+          },
+        },
+        minMoves: 1,
+        maxMoves: 1,
+        activePlayers: { all: 'ready' },
+      },
+      next: ({ G }) => {
+        return G.deck.length == 0 ? 'selling' : 'buying'
+      },
     },
   },
 

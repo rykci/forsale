@@ -10,13 +10,13 @@
 - [x] leave room button should call leave match api
 - [x] room page copy to clipboard function
 - [ ] room page loading styling
-- [ ] play the game
-  - [ ] end game screen
+- [x] play the game
+  - [x] end game screen
 - [ ] UX: hover "Copied!" button text
 - [ ] Design card bg and board bg
 - [ ] Hover Pick Card
-- [ ] Show players waiting to pick
-- [ ] maybe show blank cards when players pick (UI/UX)
-- [ ] Add delay to "reveal" each player's card
-  - [ ] suggestion: after each player PickCard(), send to ready/confirm/next stage
-  - [ ] all players need to send Confirm() before continuing the game
+- [x] Show players waiting to pick
+- [x] maybe show blank cards when players pick (UI/UX)
+- [x] Add delay to "reveal" each player's card
+  - [x] suggestion: after each player PickCard(), send to ready/confirm/next stage
+  - [x] all players need to send Confirm() before continuing the game
