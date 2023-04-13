@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "serve": "node --experimental-modules src/server.mjs"
+    "serve": "node --experimental-modules src/server.mjs",
+    "start": "node --experimental-modules src/server.mjs"
   },
   "dependencies": {
     "boardgame.io": "^0.50.2",
