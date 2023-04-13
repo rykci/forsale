@@ -4,7 +4,11 @@ import Landing from './pages/Landing'
 import { useState } from 'react'
 import Room from './pages/Room'
 
-const lobbyClient = new LobbyClient({ server: 'http://localhost:8000' })
+const serverHost = 'https://forsalegame.onrender.com/'
+
+const lobbyClient = new LobbyClient({
+  server: serverHost,
+})
 
 const App = () => {
   const [name, setName] = useState('')
@@ -36,6 +40,7 @@ const App = () => {
               setPlayerToken={setPlayerToken}
               name={name}
               setName={setName}
+              serverHost={serverHost}
             />
           }
         />

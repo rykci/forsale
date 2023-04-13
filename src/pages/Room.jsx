@@ -6,7 +6,14 @@ import { ForSale } from '../Game'
 import { Board } from '../Board'
 import { SocketIO } from 'boardgame.io/multiplayer'
 
-function Room({ lobbyClient, playerToken, setPlayerToken, name, setName }) {
+function Room({
+  lobbyClient,
+  playerToken,
+  setPlayerToken,
+  name,
+  setName,
+  serverHost,
+}) {
   let { roomID } = useParams()
   const navigate = useNavigate()
   const [matchData, setMatchData] = useState(null)
@@ -85,7 +92,7 @@ function Room({ lobbyClient, playerToken, setPlayerToken, name, setName }) {
     const ForSaleClient = Client({
       game: ForSale,
       board: Board,
-      multiplayer: SocketIO({ server: 'localhost:8000' }),
+      multiplayer: SocketIO({ server: serverHost }),
       numPlayers: matchData.players.length,
       debug: false,
     })
