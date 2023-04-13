@@ -73,7 +73,11 @@ function Room({ lobbyClient, playerToken, setPlayerToken, name, setName }) {
   // #77BDDF
 
   if (!matchData) {
-    return <div>Loading...</div>
+    return (
+      <div className="flex justify-center align-middle items-center min-h-screen w-screen">
+        <div className="">Loading...</div>
+      </div>
+    )
   }
 
   if (matchStarted && matchData.players.every((player) => player.name)) {
@@ -100,7 +104,7 @@ function Room({ lobbyClient, playerToken, setPlayerToken, name, setName }) {
         <h2 className="text-center p-2 rounded-lg text-2xl font-bold">
           Waiting for Players...
         </h2>
-        <div className="rounded-lg text-center w-1/2 self-center">
+        <div className="rounded-lg text-center self-center">
           <button
             className={`w-56 ${
               clipboard
@@ -127,7 +131,7 @@ function Room({ lobbyClient, playerToken, setPlayerToken, name, setName }) {
         ))}
         <button
           onClick={() => leaveRoom()}
-          className="w-1/4 self-center shadow-lg enabled:hover:bg-sky-600 enabled:hover:text-white active:translate-y-1"
+          className=" w-1/2 md:w-1/4 self-center shadow-lg enabled:hover:bg-sky-600 enabled:hover:text-white active:translate-y-1"
         >
           Leave Room
         </button>

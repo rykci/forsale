@@ -11,11 +11,11 @@ const PickCard = ({ G, ctx, playerID, events }, card) => {
 
   if (!G.selling.includes(0)) {
     let sortedPlayers = sortPlayersByHouse(G.selling)
-    console.log(sortedPlayers)
+    //console.log(sortedPlayers)
     G.sortedSelling = sortedPlayers
 
     for (let i = 0; i < ctx.numPlayers; i++) {
-      console.log(G.prices[i])
+      //console.log(G.prices[i])
 
       G.players[i].coins += G.prices[sortedPlayers[i]]
     }
@@ -54,13 +54,12 @@ const Bid = ({ G, playerID }, amount) => {
 }
 
 const Pass = ({ G, playerID, events, ctx }) => {
-  console.log(`PLAYER ${playerID} PASSED`)
   G.players[playerID].hasPassed = true
   G.players[playerID].coins += Math.floor(G.players[playerID].bid / 2)
   let pickup = G.auction.pop()
   G.players[playerID].cards.push(pickup)
 
-  console.log(`PLAYER ${playerID} PICKS UP ${pickup}`)
+  console.log(`PLAYER ${playerID} PASSED, PICKS UP ${pickup}`)
 
   if (G.auction.length == 1) {
     for (let i = 0; i < ctx.numPlayers; i++) {
@@ -88,20 +87,19 @@ export const ForSale = {
   setup: ({ random, ctx }) => {
     let deck = random
       .Shuffle([...Array(31).keys()].slice(1))
-      .slice(30 % ctx.numPlayers)
+      .slice(ctx.numPlayers == 3 ? 6 : 30 % ctx.numPlayers)
 
     let priceDeck = [...Array(16).keys(), ...Array(15).keys()].slice(1)
     priceDeck[0] = 0
     priceDeck[16] = 15
-    priceDeck = random.Shuffle(priceDeck).slice(30 % ctx.numPlayers)
+    priceDeck = random
+      .Shuffle(priceDeck)
+      .slice(ctx.numPlayers == 3 ? 6 : 30 % ctx.numPlayers) // remove 6 for 3p, 2 for 4p, 0 for 5p and 6p
 
-    let initialAmount = 14
-    if (ctx.numPlayers == 5) {
-      initialAmount = 16
-    } else if (ctx.numPlayers == 4) {
-      initialAmount = 21
-    } else {
-      initialAmount = 28
+    // 18 coins for 3-4p, 14 for 5-6p
+    let initialAmount = 18
+    if (ctx.numPlayers == 5 || ctx.numPlayers == 6) {
+      initialAmount = 14
     }
 
     let players = {}
@@ -137,7 +135,6 @@ export const ForSale = {
       next: ({ G, ctx }) => {
         for (let i = 1; i <= ctx.numPlayers; i++) {
           let nextIndex = (parseInt(ctx.currentPlayer) + i) % ctx.numPlayers
-          console.log('checking index:', nextIndex)
           if (!G.players[nextIndex].hasPassed) {
             return nextIndex
           }
