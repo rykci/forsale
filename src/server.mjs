@@ -7,6 +7,7 @@ const server = Server({
     Object.values(Origins),
     'http://127.0.0.1:5173',
     'https://forsalegame.vercel.app',
+    'https://forsalegame-local.vercel.app',
   ],
 })
 
