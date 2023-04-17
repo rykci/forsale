@@ -4,7 +4,7 @@ import Landing from './pages/Landing'
 import { useState } from 'react'
 import Room from './pages/Room'
 
-const serverHost = 'https://forsalegame.onrender.com/'
+const serverHost = 'http://localhost:8000'
 
 const lobbyClient = new LobbyClient({
   server: serverHost,
@@ -19,7 +19,7 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route
-          path="/"
+          path='/'
           element={
             <Landing
               lobbyClient={lobbyClient}
@@ -32,7 +32,7 @@ const App = () => {
           }
         />
         <Route
-          path="/room/:roomID"
+          path='/room/:roomID'
           element={
             <Room
               lobbyClient={lobbyClient}
