@@ -10,15 +10,23 @@ const PickCard = ({ G, ctx, playerID, events }, card) => {
   G.players[playerID].cards.splice(index, 1)
 
   if (!G.selling.includes(0)) {
-    let sortedPlayers = sortPlayersByHouse(G.selling)
-    //console.log(sortedPlayers)
-    G.sortedSelling = sortedPlayers
+    let sortedPlayers = G.selling
+      .map((value, index) => index)
+      .sort((a, b) => G.selling[b] - G.selling[a])
+
+    let playerToPriceEarned = new Array(ctx.numPlayers).fill(0)
+    sortedPlayers.forEach(
+      (player, index) => (playerToPriceEarned[player] = G.prices[index])
+    )
+    G.sortedSelling = playerToPriceEarned
 
     for (let i = 0; i < ctx.numPlayers; i++) {
-      //console.log(G.prices[i])
-
-      G.players[i].coins += G.prices[sortedPlayers[i]]
+      G.players[i].coins += playerToPriceEarned[i]
     }
+
+    // console.log('Player values:', G.selling)
+    // console.log('Sorted treasure:', G.prices)
+    // console.log('Treasure assignments:', playerToPriceEarned)
 
     events.endPhase()
   }
